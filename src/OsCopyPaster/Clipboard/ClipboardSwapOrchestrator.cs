@@ -68,26 +68,20 @@ internal class ClipboardSwapOrchestrator
         try
         {
             _hook.IsSimulating = true;
-
-            // 1. Backup the current clipboard
             var backup = ClipboardManager.Save();
-
-            // 2. Clear so we can detect new content
+            
             ClipboardManager.Clear();
-
-            // 3. Simulate Ctrl+C in the active application
+            
             InputSimulator.SendCtrlC();
-
-            // 4. Wait for the target app to write to the clipboard
+            
             await Task.Delay(_swapDelayMs);
-
-            // 5. Read what was copied
+            
             var copiedText = ClipboardManager.GetText();
+            
             _slots[slot] = copiedText;
-
-            // 6. Restore the user's original clipboard
+            
             ClipboardManager.Restore(backup);
-
+            
             _hook.IsSimulating = false;
             SwapCompleted?.Invoke(HotkeyType.SecondaryCopy, slot, copiedText != null);
         }
@@ -123,22 +117,16 @@ internal class ClipboardSwapOrchestrator
         try
         {
             _hook.IsSimulating = true;
-
-            // 1. Backup the current clipboard
             var backup = ClipboardManager.Save();
-
-            // 2. Set clipboard to the secondary buffer content
+            
             ClipboardManager.SetText(text);
-
-            // 3. Simulate Ctrl+V in the active application
+            
             InputSimulator.SendCtrlV();
-
-            // 4. Wait for the target app to read from the clipboard
+            
             await Task.Delay(_swapDelayMs);
-
-            // 5. Restore the user's original clipboard
+            
             ClipboardManager.Restore(backup);
-
+            
             _hook.IsSimulating = false;
             SwapCompleted?.Invoke(HotkeyType.SecondaryPaste, slot, true);
         }

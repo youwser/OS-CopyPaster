@@ -17,6 +17,15 @@ internal static class Program
     [STAThread]
     static void Main()
     {
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+        {
+            File.WriteAllText("crash.log", e.ExceptionObject.ToString());
+        };
+        Application.ThreadException += (s, e) =>
+        {
+            File.WriteAllText("crash.log", e.Exception.ToString());
+        };
+
         // Prevent multiple instances
         using var mutex = new Mutex(true, "OsCopyPaster_SingleInstance", out bool isNew);
         if (!isNew)
@@ -45,13 +54,8 @@ internal static class Program
         // ── Create App State ────────────────────────────────────────
         var appState = new AppState();
 
-        // ── Parse Keybinds ──────────────────────────────────────────
-        var copyCombo = KeyCombo.Parse(config.SecondaryCopyKey);
-        var pasteCombo = KeyCombo.Parse(config.SecondaryPasteKey);
-
         // ── Create Keyboard Hook ────────────────────────────────────
-        var keyboardHook = new GlobalKeyboardHook(
-            appState, copyCombo, pasteCombo, config.ChordTimeoutMs);
+        var keyboardHook = new GlobalKeyboardHook(appState, config);
 
         // ── Create Clipboard Swap Orchestrator ──────────────────────
         var orchestrator = new ClipboardSwapOrchestrator(

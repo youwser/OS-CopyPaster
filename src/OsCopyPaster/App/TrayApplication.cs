@@ -37,7 +37,7 @@ internal class TrayApplication : ApplicationContext
         // ── System Tray Icon ────────────────────────────────────────
         _notifyIcon = new NotifyIcon
         {
-            Icon = CreateTrayIcon(),
+            Icon = SystemIcons.Application,
             Text = "OS-CopyPaster (Active)",
             Visible = true,
             ContextMenuStrip = BuildContextMenu()
@@ -186,9 +186,7 @@ internal class TrayApplication : ApplicationContext
     /// </summary>
     private void OnConfigChanged(AppConfig newConfig)
     {
-        var copyCombo = KeyCombo.Parse(newConfig.SecondaryCopyKey);
-        var pasteCombo = KeyCombo.Parse(newConfig.SecondaryPasteKey);
-        _keyboardHook.UpdateKeybinds(copyCombo, pasteCombo, newConfig.ChordTimeoutMs);
+        _keyboardHook.UpdateKeybinds(newConfig);
         _orchestrator.UpdateSwapDelay(newConfig.SwapDelayMs);
     }
 
