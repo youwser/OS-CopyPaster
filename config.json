@@ -1,0 +1,7 @@
+{
+  "secondaryCopyKey": "Ctrl+OemSemicolon",
+  "secondaryPasteKey": "Ctrl+OemQuotes",
+  "swapDelayMs": 150,
+  "chordTimeoutMs": 1000,
+  "showNotifications": true
+}
